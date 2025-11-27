@@ -6,13 +6,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-#setup dc bot
+
 dc_intents = discord.Intents.all()
 dc_bot = commands.Bot(command_prefix = '!', intents=dc_intents, application_id=1194325058882126005)
 
-async def join_voice_channel(
-    client: discord.Client, voice_channel: discord.VoiceChannel, cls=None
-) -> discord.VoiceProtocol:
+async def join_voice_channel(client: discord.Client, voice_channel: discord.VoiceChannel, cls=None) -> discord.VoiceProtocol:
     if client.voice_clients is not None:
         for voice_client in client.voice_clients:
             if voice_client.channel == voice_channel:

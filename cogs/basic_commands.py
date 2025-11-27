@@ -12,9 +12,7 @@ class BasicCommands(commands.Cog):
     async def on_ready(self):
         print(f'Command Bot 登入身分: {self.client.user}')
         custom_activity = discord.CustomActivity('喵喵')
-        await self.client.change_presence(
-            status=discord.Status.online, activity=custom_activity
-        )
+        await self.client.change_presence(status=discord.Status.online, activity=custom_activity)
         try:
             synced = await self.client.tree.sync()
             print(f"Synced {synced} commands")
