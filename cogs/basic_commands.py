@@ -7,7 +7,7 @@ class BasicCommands(commands.Cog):
 
     def __init__(self, client=discord.Client):
         self.client = client
-
+        
     @commands.Cog.listener()
     async def on_ready(self):
         print(f'Command Bot 登入身分: {self.client.user}')
@@ -15,9 +15,9 @@ class BasicCommands(commands.Cog):
         await self.client.change_presence(status=discord.Status.online, activity=custom_activity)
         try:
             synced = await self.client.tree.sync()
-            print(f"Synced {synced} commands")
+            print(f'Synced {synced} commands')
         except Exception as e:
-            print("An error occurred while syncing: ", e)
+            print('An error occurred while syncing: ', e)
 
     @commands.hybrid_command(name='kiki', help='kiki會跟你打招呼')
     async def kiki(self, ctx: commands.Context):

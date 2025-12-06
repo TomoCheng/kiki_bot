@@ -34,5 +34,5 @@ async def init_load_all_cog():
 
 if __name__ == '__main__':
     asyncio.run(init_load_all_cog())
-    bot_token = os.environ.get("discord_bot_token")
+    bot_token = os.environ.get('discord_bot_token')
     dc_bot.run(bot_token)
