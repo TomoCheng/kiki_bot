@@ -1,12 +1,10 @@
 import asyncio
-import datetime
-import re
+from datetime import datetime
 import discord
 import wavelink
 from discord.ext import commands
 from main import join_voice_channel
 
-YOUTUBE_PLAYLIST_REGEX = re.compile(r'(?:list=)([a-zA-Z0-9_-]+)')
 
 
 class WavelinkHandler:
@@ -28,36 +26,46 @@ class WavelinkHandler:
     async def joinChannel(self, client: discord.Client, voice_channel: discord.VoiceChannel):
         self.player: wavelink.Player = await join_voice_channel(client, voice_channel, cls=wavelink.Player)
 
-    async def playMusic(self, ctx: commands.Context, youtube_url: str, is_interruption: bool):
-        if self.player == None:
-            await ctx.send('❌ 播放功能錯誤！')
-            return
-        
-        self.player.autoplay = wavelink.AutoPlayMode.enabled if self.isAutoPlay else wavelink.AutoPlayMode.disabled
+    async def searchMusic(self, youtube_url: str):
         tracks: wavelink.Search = await wavelink.Playable.search(youtube_url)
-        is_playlist = bool(YOUTUBE_PLAYLIST_REGEX.search(youtube_url))
-
         if not tracks:
-            await ctx.send('❌ 找不到音樂！')
-            return
+            print(f'Search music failed')
+            return None
+        
+        return tracks
 
-        #Filter while isn't a play list but tracks count > 1
-        if (is_playlist is False):
+    async def addMusic(self, tracks: list[wavelink.Playable] , is_interruption: bool, is_playList: bool):
+        if (self.player is None):
+            print(f'Add music failed because player is not found')
+            return None
+        
+        if (is_playList is False):
             tracks = [tracks[0]]
 
-        message = ''
+        add_music_text = ''
         for index, track in enumerate(tracks):
             if (is_interruption is True):
                 self.player.queue.put_at(index, track)
-                message += f'已將 ***{track.title}*** 插入播放清單\n'
+                add_music_text += f'已將 ***{track.title}*** 插入播放清單\n'
             else:
                 self.player.queue.put(track)
-                message += f'已將 ***{track.title}*** 加入播放清單\n'
-        await ctx.reply(f'{message}')
+                add_music_text += f'已將 ***{track.title}*** 加入播放清單\n'
+        print(f'{add_music_text}')
+        return add_music_text
+    
+    async def playMusic(self):
+        if (self.player is None):
+            print(f'Play music failed because player is not found')
+            return False
         
         if (self.player.playing is False):
             first_track = self.player.queue.get_at(0)
             await self.player.play(first_track, volume=self.volume)
+            return True
+
+
+    async def pauseMusic(self, is_pause: bool):
+        await self.player.pause(is_pause)
 
     async def skipMusic(self):
         return await self.player.skip()

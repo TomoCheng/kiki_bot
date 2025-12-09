@@ -40,7 +40,8 @@ class BasicCommands(commands.Cog):
         await ctx.defer()
         if (ctx.voice_client is not None) and (ctx.author.voice is not None) and (ctx.voice_client.channel == ctx.author.voice.channel):
             await leave_voice_channel(self.client, ctx.voice_client.channel)
-            await ctx.send(':(')
+            sadkiki_emoji = '<:SADKIKI:1143885608679395361>'
+            await ctx.send(sadkiki_emoji)
         else:
             await ctx.send('||誰在狗叫||')
 
